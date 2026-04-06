@@ -31,6 +31,11 @@
   margin-bottom: 4px;
 }
 
+.qa-settings-card {
+  margin-bottom: 8px;
+  border-radius: 10px;
+}
+
 .qa-sidebar-title {
   font-size: 13px;
   font-weight: 600;
@@ -44,6 +49,25 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.qa-weak-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+.qa-weak-item {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .qa-sample-item {
