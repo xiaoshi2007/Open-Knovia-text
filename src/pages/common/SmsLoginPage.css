@@ -1,0 +1,414 @@
+/* ========== SMS Login Page Styles ========== */
+.sms-login-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 0 24px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 48px 40px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+}
+
+.sms-login-container-sm {
+  max-width: 400px;
+}
+
+.sms-login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.sms-login-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.sms-login-form {
+  width: 100%;
+}
+
+/* ========== 滑块验证码 ========== */
+.captcha-container {
+  position: relative;
+  width: 100%;
+  height: 44px;
+  margin: 8px 0;
+  user-select: none;
+}
+
+.captcha-track {
+  width: 100%;
+  height: 44px;
+  background: #f3f4f6;
+  border-radius: 22px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  position: relative;
+}
+
+.captcha-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.08), rgba(99, 102, 241, 0.18));
+  border-radius: 22px;
+  transition: background 0.3s ease;
+}
+
+.captcha-fill.verified {
+  background: linear-gradient(90deg, rgba(82, 196, 26, 0.08), rgba(82, 196, 26, 0.18));
+}
+
+.captcha-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #9ca3af;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.captcha-check {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: #52c41a;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.captcha-slider {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid #6366f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2;
+}
+
+.captcha-slider:hover {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+.captcha-slider:active {
+  cursor: grabbing;
+}
+
+.captcha-slider.verified {
+  border-color: #52c41a;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+}
+
+.captcha-arrows {
+  font-size: 14px;
+  color: #6366f1;
+  letter-spacing: -2px;
+  font-weight: 700;
+}
+
+/* ========== 角色选择全屏页 ========== */
+.role-select-fullscreen {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 960px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+
+.role-select-top {
+  text-align: center;
+}
+
+.role-select-cards {
+  display: flex;
+  gap: 28px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ========== 角色卡片动画 ========== */
+@keyframes roleCardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========== 角色卡片（动态效果版） ========== */
+.role-card-animated {
+  position: relative;
+  width: 260px;
+  min-height: 340px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.role-card-animated:hover {
+  border-color: var(--card-border, #6366f1);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow:
+    0 25px 60px rgba(99, 102, 241, 0.18),
+    0 8px 24px rgba(99, 102, 241, 0.12);
+}
+
+.role-card-animated:active {
+  transform: translateY(-6px) scale(0.98);
+  transition-duration: 0.15s;
+}
+
+/* 背景光效 */
+.role-card-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+}
+
+.role-card-animated:hover .role-card-glow {
+  opacity: 1;
+}
+
+/* 脉冲环 */
+.role-card-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  z-index: 0;
+}
+
+.role-card-animated:hover .role-card-pulse {
+  animation: cardPulseRing 1.5s ease-out infinite;
+}
+
+@keyframes cardPulseRing {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+/* 浮动粒子 */
+.role-card-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.role-particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: particleFloat 2s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes particleFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+  20% {
+    opacity: 0.8;
+    transform: translateY(-10px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(0.3);
+  }
+}
+
+/* 内容 */
+.role-card-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 24px 28px;
+  text-align: center;
+}
+
+/* 图标区域 */
+.role-card-icon-wrapper {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 20px;
+}
+
+.role-card-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--icon-color, #6366f1), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  filter: blur(12px);
+}
+
+.role-card-animated:hover .role-card-icon-wrapper::before {
+  opacity: 0.3;
+}
+
+.role-card-icon-float {
+  width: 96px;
+  height: 96px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.role-card-animated:hover .role-card-icon-float {
+  transform: translateY(-8px) rotateZ(5deg) scale(1.05);
+  background: white;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* 标题 */
+.role-card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.role-card-animated:hover .role-card-title {
+  transform: translateY(-2px);
+}
+
+/* 描述 */
+.role-card-desc {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  transition: all 0.3s ease 0.05s;
+}
+
+.role-card-animated:hover .role-card-desc {
+  color: #4b5563;
+}
+
+/* 箭头按钮 */
+.role-card-arrow {
+  margin-top: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+
+.role-card-arrow span {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--card-border, #6366f1);
+  transition: transform 0.3s ease;
+}
+
+.role-card-animated:hover .role-card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.role-card-animated:hover .role-card-arrow span {
+  animation: arrowBounce 1.2s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+/* 底部渐变条 */
+.role-card-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  border-radius: 2px;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ========== 装饰浮动元素（背景） ========== */
+.login-bg .float-decor-1,
+.login-bg .float-decor-2,
+.login-bg .float-decor-3 {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 860px) {
+  .role-select-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .role-card-animated {
+    width: 100%;
+    max-width: 340px;
+    min-height: auto;
+  }
+}

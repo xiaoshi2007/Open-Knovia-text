@@ -1,0 +1,475 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f5f5ff;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ===========================
+   Custom scrollbar
+   =========================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+}
+
+/* ===========================
+   Gradient text helper
+   =========================== */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===========================
+   🎨 Buttons — 动效增强
+   =========================== */
+
+/* Primary 按钮：光泽扫过 */
+.ant-btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.ant-btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.ant-btn-primary:hover::after {
+  left: 100%;
+}
+
+.ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.35) !important;
+}
+
+.ant-btn-primary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Default 按钮 hover */
+.ant-btn-default:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.1);
+}
+
+.ant-btn:not(:disabled):active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Link 按钮 hover slide */
+a.ant-btn-link:not(:disabled):hover {
+  transform: translateX(3px);
+}
+
+/* ===========================
+   🏷️ Tags — 渐变背景
+   =========================== */
+.ant-tag {
+  border: none !important;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.ant-tag:not(.ant-tag-checkable):not(.ant-tag-checkable-checked):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+
+/* 紫色 */
+.ant-tag-purple {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff) !important;
+  color: #4f46e5 !important;
+}
+
+/* 蓝色 */
+.ant-tag-blue {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+  color: #2563eb !important;
+}
+
+/* 绿色 */
+.ant-tag-green,
+.ant-tag-success {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5) !important;
+  color: #059669 !important;
+}
+
+/* 红色 */
+.ant-tag-red,
+.ant-tag-error {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2) !important;
+  color: #dc2626 !important;
+}
+
+/* 橙色 */
+.ant-tag-orange,
+.ant-tag-warning {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
+  color: #d97706 !important;
+}
+
+/* 青色 */
+.ant-tag-cyan {
+  background: linear-gradient(135deg, #ecfeff, #cffafe) !important;
+  color: #0891b2 !important;
+}
+
+/* 金色 */
+.ant-tag-gold {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
+  color: #b45309 !important;
+}
+
+/* 灰色 */
+.ant-tag-default {
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6) !important;
+  color: #6b7280 !important;
+}
+
+/* 蓝色处理 */
+.ant-tag-processing {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+  color: #2563eb !important;
+}
+
+/* CheckableTag 选中态 */
+.ant-tag-checkable-checked {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow: 0 3px 12px rgba(99,102,241,0.3) !important;
+}
+
+.ant-tag-checkable:not(.ant-tag-checkable-checked):hover {
+  border-color: #a5b4fc !important;
+  color: #6366f1 !important;
+  box-shadow: 0 3px 10px rgba(99,102,241,0.08);
+  transform: translateY(-1px);
+}
+
+/* ===========================
+   📊 Progress — 渐变 + 流光
+   =========================== */
+.ant-progress-bg {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.ant-progress-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: progressShine 2.5s ease-in-out infinite;
+}
+
+@keyframes progressShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.ant-progress-success-bg {
+  background: linear-gradient(90deg, #10b981, #34d399) !important;
+}
+
+.ant-progress-inner {
+  background: #f3f4f6 !important;
+}
+
+/* ===========================
+   🃏 Card — hover 顶部光带
+   =========================== */
+.ant-card {
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.card-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 1;
+}
+
+.card-hover:hover::before {
+  transform: scaleX(1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.12), 0 4px 12px rgba(99,102,241,0.06) !important;
+}
+
+/* ===========================
+   📋 List Items — hover 效果
+   =========================== */
+.ant-list-item {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  border-radius: 10px !important;
+  border-color: transparent !important;
+}
+
+.ant-list-item:hover {
+  background: linear-gradient(135deg, #fafafe, #f5f3ff) !important;
+  transform: translateX(4px);
+  box-shadow: 0 2px 12px rgba(99,102,241,0.06);
+}
+
+/* ===========================
+   📈 Stat Cards
+   =========================== */
+.stat-card {
+  background: white;
+  border-radius: 14px !important;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 12px 32px rgba(99,102,241,0.12) !important;
+  transform: translateY(-4px);
+  border-color: #e0e7ff !important;
+}
+
+.stat-card:hover::after {
+  opacity: 1;
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===========================
+   📝 Page header
+   =========================== */
+.page-header {
+  margin-bottom: 24px;
+  padding: 20px 0;
+}
+
+/* ===========================
+   🎚️ Slider handle hover
+   =========================== */
+.ant-slider-handle:hover {
+  transform: scale(1.2);
+}
+
+/* ===========================
+   🌟 Avatar hover
+   =========================== */
+.ant-avatar:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(99,102,241,0.25);
+}
+
+/* ===========================
+   💡 Card extra links
+   =========================== */
+.ant-card-extra a {
+  transition: all 0.3s ease !important;
+}
+
+.ant-card-extra a:hover {
+  transform: translateX(3px);
+}
+
+/* ===========================
+   📤 Upload drag area
+   =========================== */
+.ant-upload-drag {
+  background: linear-gradient(135deg, #fafafe, #f5f3ff) !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-upload-drag:hover {
+  border-color: #6366f1 !important;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.1);
+}
+
+/* ===========================
+   🔘 Radio checked
+   =========================== */
+.ant-radio-checked .ant-radio-inner {
+  background-color: #6366f1 !important;
+  border-color: #6366f1 !important;
+}
+
+/* ===========================
+   🏅 Badge glow
+   =========================== */
+.ant-badge-count {
+  box-shadow: 0 2px 8px rgba(245,158,11,0.3) !important;
+}
+
+.ant-badge-status-dot-success {
+  box-shadow: 0 0 6px rgba(16,185,129,0.4);
+}
+
+/* ===========================
+   📌 Dropdown
+   =========================== */
+.ant-dropdown-menu {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1) !important;
+  padding: 6px !important;
+}
+
+.ant-dropdown-menu-item {
+  border-radius: 8px !important;
+}
+
+.ant-dropdown-menu-item:hover {
+  background: #eef2ff !important;
+}
+
+/* ===========================
+   🔄 Spin dots gradient
+   =========================== */
+.ant-spin-dot-item {
+  background-color: #6366f1 !important;
+}
+
+/* ===========================
+   📎 Tooltip
+   =========================== */
+.ant-tooltip-inner {
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+}
+
+/* ===========================
+   Role cards (legacy)
+   =========================== */
+.role-card {
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  padding: 40px 30px;
+  border-radius: 16px;
+  background: white;
+}
+
+.role-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(99,102,241,0.2);
+}
+
+.role-card .role-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.role-card .role-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e1b4b;
+  margin-bottom: 8px;
+}
+
+.role-card .role-desc {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ===========================
+   Login page background
+   =========================== */
+.login-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4338ca 60%, #6366f1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-bg::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%);
+  top: -200px;
+  right: -200px;
+  border-radius: 50%;
+}
+
+.login-bg::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+  bottom: -100px;
+  left: -100px;
+  border-radius: 50%;
+}
