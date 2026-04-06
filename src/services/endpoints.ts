@@ -32,6 +32,40 @@ export const matchAPI = {
   compare: (studentId: string, jobId: string) => api.post('/match/compare', { studentId, jobId }),
   getJobs: () => api.get('/match/jobs'),
   getStudents: () => api.get('/match/students'),
+  saveManualReview: async (payload: {
+    studentId: string;
+    jobId: string;
+    aiScore: number;
+    manualScore: number;
+    finalScore: number;
+    comment?: string;
+  }) => {
+    const storageKey = `manual_review_${payload.jobId}_${payload.studentId}`;
+    const record = {
+      ...payload,
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      // 优先尝试真实接口；若后端尚未接入则走本地兜底
+      await api.post('/match/manual-review', record);
+      localStorage.setItem(storageKey, JSON.stringify(record));
+      return { success: true, source: 'api', data: record };
+    } catch (_err) {
+      localStorage.setItem(storageKey, JSON.stringify(record));
+      return { success: true, source: 'local', data: record };
+    }
+  },
+  getManualReview: async (studentId: string, jobId: string) => {
+    const storageKey = `manual_review_${jobId}_${studentId}`;
+    try {
+      const res = await api.get(`/match/manual-review/${jobId}/${studentId}`);
+      if (res) return res;
+    } catch (_err) {
+      // ignore and fallback localStorage
+    }
+    const local = localStorage.getItem(storageKey);
+    return local ? JSON.parse(local) : null;
+  },
 };
 
 // 课程

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Card, Select, Row, Col, Typography, Tag, Divider, Progress, Space, Button } from 'antd';
+import { useEffect, useState } from 'react';
+import { Card, Select, Row, Col, Typography, Tag, Divider, Progress, Space, Button, InputNumber, Input, Alert, message } from 'antd';
 import {
   SwapOutlined,
   CheckCircleOutlined,
@@ -13,6 +13,7 @@ import * as echarts from 'echarts/core';
 import { RadarChart } from 'echarts/charts';
 import { RadarComponent, TooltipComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { matchAPI } from '../../services/endpoints';
 
 echarts.use([RadarChart, RadarComponent, TooltipComponent, CanvasRenderer]);
 
@@ -92,8 +93,15 @@ const getComparison = (jobId: string, studentId: string) => {
 export default function JobMatchAnalysis() {
   const [selectedJob, setSelectedJob] = useState('j1');
   const [selectedStudent, setSelectedStudent] = useState('s001');
+  const [manualScore, setManualScore] = useState(80);
+  const [reviewComment, setReviewComment] = useState('');
+  const [savingReview, setSavingReview] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
 
   const comp = getComparison(selectedJob, selectedStudent);
+  const finalScore = Math.round(comp.score * 0.7 + manualScore * 0.3);
+  const scoreGap = Math.abs(comp.score - manualScore);
+  const needsSecondReview = scoreGap >= 15;
 
   const radarOption = {
     tooltip: {},
@@ -139,6 +147,42 @@ export default function JobMatchAnalysis() {
   };
 
   const matchedCount = comp.comparisons.filter(c => c.matched).length;
+
+  useEffect(() => {
+    const loadManualReview = async () => {
+      const saved = await matchAPI.getManualReview(selectedStudent, selectedJob);
+      if (!saved) {
+        setManualScore(80);
+        setReviewComment('');
+        setLastSavedAt(null);
+        return;
+      }
+      setManualScore(typeof saved.manualScore === 'number' ? saved.manualScore : 80);
+      setReviewComment(saved.comment || '');
+      setLastSavedAt(saved.updatedAt || null);
+    };
+    loadManualReview();
+  }, [selectedJob, selectedStudent]);
+
+  const handleSaveManualReview = async () => {
+    setSavingReview(true);
+    try {
+      const result = await matchAPI.saveManualReview({
+        studentId: selectedStudent,
+        jobId: selectedJob,
+        aiScore: comp.score,
+        manualScore,
+        finalScore,
+        comment: reviewComment,
+      });
+      setLastSavedAt(result.data.updatedAt);
+      message.success(result.source === 'api' ? '人工复核评分已保存（已接入接口）' : '人工复核评分已保存（本地兜底）');
+    } catch (_err) {
+      message.error('保存失败，请稍后重试');
+    } finally {
+      setSavingReview(false);
+    }
+  };
 
   return (
     <div>
@@ -268,6 +312,88 @@ export default function JobMatchAnalysis() {
                 </Button>
               </Col>
             </Row>
+          </Card>
+
+          <Card bordered={false} className="card-hover" style={{ marginTop: 24, borderRadius: 12 }}>
+            <Title level={5}>🧑‍💼 人工复核打分</Title>
+            <Text type="secondary">
+              当 AI 评分与 HR 直觉不一致时，可通过人工复核进行兜底，降低高潜人才遗漏风险。
+            </Text>
+            <Row gutter={16} style={{ marginTop: 16 }}>
+              <Col xs={24} md={8}>
+                <Card size="small" style={{ borderRadius: 8, background: '#f8fafc' }}>
+                  <Text type="secondary">AI 匹配分</Text>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#6366f1' }}>{comp.score}</div>
+                </Card>
+              </Col>
+              <Col xs={24} md={8}>
+                <Card size="small" style={{ borderRadius: 8, background: '#f8fafc' }}>
+                  <Text type="secondary">人工复核分</Text>
+                  <div style={{ marginTop: 8 }}>
+                    <InputNumber
+                      min={0}
+                      max={100}
+                      value={manualScore}
+                      onChange={(v) => setManualScore(typeof v === 'number' ? v : 0)}
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                </Card>
+              </Col>
+              <Col xs={24} md={8}>
+                <Card size="small" style={{ borderRadius: 8, background: '#eef2ff' }}>
+                  <Text type="secondary">综合分 (AI 70% + 人工 30%)</Text>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: '#4f46e5' }}>{finalScore}</div>
+                </Card>
+              </Col>
+            </Row>
+
+            <div style={{ marginTop: 16 }}>
+              <Input.TextArea
+                rows={3}
+                placeholder="填写复核依据，例如：项目深度、沟通表达、学习潜力等"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+              />
+            </div>
+
+            <div style={{ marginTop: 12 }}>
+              {needsSecondReview ? (
+                <Alert
+                  type="warning"
+                  showIcon
+                  message="AI 与人工评分差异较大，建议二次复核"
+                  description={`当前分差为 ${scoreGap} 分，建议安排复试或补充材料评估。`}
+                />
+              ) : (
+                <Alert
+                  type="success"
+                  showIcon
+                  message="评分一致性良好"
+                  description={`当前分差为 ${scoreGap} 分，可进入下一流程。`}
+                />
+              )}
+            </div>
+
+            <Space style={{ marginTop: 16 }}>
+              <Tag color={finalScore >= 80 ? 'green' : finalScore >= 60 ? 'blue' : 'orange'}>
+                复核结论：{finalScore >= 80 ? '优先推进' : finalScore >= 60 ? '建议保留观察' : '暂不推进'}
+              </Tag>
+              <Button
+                type="primary"
+                loading={savingReview}
+                onClick={handleSaveManualReview}
+              >
+                保存人工复核
+              </Button>
+            </Space>
+            {lastSavedAt ? (
+              <div style={{ marginTop: 8 }}>
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  最近保存时间：{new Date(lastSavedAt).toLocaleString()}
+                </Text>
+              </div>
+            ) : null}
           </Card>
         </Col>
       </Row>

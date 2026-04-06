@@ -1,33 +1,39 @@
-import { useState } from 'react';
-import { Card, Typography, Tag, Select, Input, Space, List, Badge, Tooltip, Avatar } from 'antd';
+import { useEffect, useState } from 'react';
+import { Card, Typography, Tag, Select, Input, Space, List, Avatar } from 'antd';
 import { SearchOutlined, FilterOutlined, EnvironmentOutlined, BookOutlined } from '@ant-design/icons';
 import ReactEChartsCore from 'echarts-for-react/lib/core';
 import * as echarts from 'echarts/core';
 import { ScatterChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { matchAPI } from '../../services/endpoints';
 
 echarts.use([ScatterChart, GridComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
 const { Title, Text, Paragraph } = Typography;
 
 const talentData = [
-  { name: '张三', major: '计算机科学', skills: ['Python', 'React', '算法'], matchScore: 85, x: 3.2, y: 4.1 },
-  { name: '李四', major: '软件工程', skills: ['React', 'TypeScript', 'Vue'], matchScore: 91, x: 4.5, y: 3.8 },
-  { name: '王五', major: '数据科学', skills: ['Java', 'Go', 'MySQL'], matchScore: 78, x: 2.8, y: 3.5 },
-  { name: '赵六', major: '人工智能', skills: ['PyTorch', 'TensorFlow', 'Python'], matchScore: 88, x: 3.8, y: 4.5 },
-  { name: '孙七', major: '计算机科学', skills: ['C++', 'Linux', 'Docker'], matchScore: 72, x: 2.5, y: 2.8 },
-  { name: '周八', major: '软件工程', skills: ['React', 'Node.js', 'MongoDB'], matchScore: 82, x: 3.5, y: 3.6 },
-  { name: '吴九', major: '信息安全', skills: ['Python', '渗透测试', 'Linux'], matchScore: 76, x: 2.2, y: 3.0 },
-  { name: '郑十', major: '计算机科学', skills: ['Go', 'Kubernetes', '微服务'], matchScore: 90, x: 4.2, y: 4.3 },
-  { name: '陈一', major: '数据科学', skills: ['Python', 'Spark', 'Hadoop'], matchScore: 84, x: 3.0, y: 4.0 },
-  { name: '林二', major: '软件工程', skills: ['Java', 'Spring', 'Vue'], matchScore: 70, x: 2.0, y: 2.5 },
-  { name: '黄三', major: '人工智能', skills: ['TensorFlow', 'Python', 'R'], matchScore: 86, x: 3.6, y: 4.2 },
-  { name: '杨四', major: '计算机科学', skills: ['Rust', 'WebAssembly', 'Go'], matchScore: 93, x: 4.8, y: 4.6 },
+  { id: 's001', name: '张三', major: '计算机科学', skills: ['Python', 'React', '算法'], matchScore: 85, x: 3.2, y: 4.1 },
+  { id: 's002', name: '李四', major: '软件工程', skills: ['React', 'TypeScript', 'Vue'], matchScore: 91, x: 4.5, y: 3.8 },
+  { id: 's003', name: '王五', major: '数据科学', skills: ['Java', 'Go', 'MySQL'], matchScore: 78, x: 2.8, y: 3.5 },
+  { id: 's004', name: '赵六', major: '人工智能', skills: ['PyTorch', 'TensorFlow', 'Python'], matchScore: 88, x: 3.8, y: 4.5 },
+  { id: 's005', name: '孙七', major: '计算机科学', skills: ['C++', 'Linux', 'Docker'], matchScore: 72, x: 2.5, y: 2.8 },
+  { id: 's006', name: '周八', major: '软件工程', skills: ['React', 'Node.js', 'MongoDB'], matchScore: 82, x: 3.5, y: 3.6 },
+  { id: 's007', name: '吴九', major: '信息安全', skills: ['Python', '渗透测试', 'Linux'], matchScore: 76, x: 2.2, y: 3.0 },
+  { id: 's008', name: '郑十', major: '计算机科学', skills: ['Go', 'Kubernetes', '微服务'], matchScore: 90, x: 4.2, y: 4.3 },
+  { id: 's009', name: '陈一', major: '数据科学', skills: ['Python', 'Spark', 'Hadoop'], matchScore: 84, x: 3.0, y: 4.0 },
+  { id: 's010', name: '林二', major: '软件工程', skills: ['Java', 'Spring', 'Vue'], matchScore: 70, x: 2.0, y: 2.5 },
+  { id: 's011', name: '黄三', major: '人工智能', skills: ['TensorFlow', 'Python', 'R'], matchScore: 86, x: 3.6, y: 4.2 },
+  { id: 's012', name: '杨四', major: '计算机科学', skills: ['Rust', 'WebAssembly', 'Go'], matchScore: 93, x: 4.8, y: 4.6 },
 ];
 
 const skillOptions = ['Python', 'React', 'Java', 'Go', 'PyTorch', 'TensorFlow', 'Vue', 'Node.js', 'TypeScript', 'C++', 'Linux', 'Docker'];
 const majorOptions = ['计算机科学', '软件工程', '数据科学', '人工智能', '信息安全'];
+const jobOptions = [
+  { value: 'j1', label: '前端开发工程师' },
+  { value: 'j2', label: '后端开发工程师' },
+  { value: 'j3', label: '算法工程师' },
+];
 
 function buildScatterOption(data: typeof talentData) {
   return {
@@ -71,6 +77,8 @@ export default function TalentExplorer() {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>(undefined);
   const [searchText, setSearchText] = useState('');
+  const [selectedJob, setSelectedJob] = useState('j1');
+  const [reviewStatusMap, setReviewStatusMap] = useState<Record<string, 'pending' | 'reviewed' | 'second-review'>>({});
 
   const filteredData = talentData.filter((t) => {
     if (selectedSkills.length > 0 && !selectedSkills.some(s => t.skills.includes(s))) return false;
@@ -78,6 +86,32 @@ export default function TalentExplorer() {
     if (searchText && !t.name.includes(searchText) && !t.skills.some(s => s.toLowerCase().includes(searchText.toLowerCase()))) return false;
     return true;
   });
+
+  useEffect(() => {
+    const loadReviewStatus = async () => {
+      const nextMap: Record<string, 'pending' | 'reviewed' | 'second-review'> = {};
+      await Promise.all(
+        talentData.map(async (talent) => {
+          const review = await matchAPI.getManualReview(talent.id, selectedJob);
+          if (!review) {
+            nextMap[talent.id] = 'pending';
+            return;
+          }
+          const gap = Math.abs((review.aiScore || 0) - (review.manualScore || 0));
+          nextMap[talent.id] = gap >= 15 ? 'second-review' : 'reviewed';
+        })
+      );
+      setReviewStatusMap(nextMap);
+    };
+    loadReviewStatus();
+  }, [selectedJob]);
+
+  const getReviewTag = (talentId: string) => {
+    const status = reviewStatusMap[talentId] || 'pending';
+    if (status === 'second-review') return <Tag color="red">差异大需二审</Tag>;
+    if (status === 'reviewed') return <Tag color="green">已复核</Tag>;
+    return <Tag color="default">待复核</Tag>;
+  };
 
   return (
     <div>
@@ -158,6 +192,16 @@ export default function TalentExplorer() {
           </Card>
 
           <Card title="人才列表" bordered={false} style={{ borderRadius: 12 }}>
+            <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text type="secondary">复核状态按岗位维度显示</Text>
+              <Select
+                value={selectedJob}
+                onChange={setSelectedJob}
+                options={jobOptions}
+                style={{ width: 180 }}
+                size="small"
+              />
+            </div>
             <List
               dataSource={filteredData.sort((a, b) => b.matchScore - a.matchScore)}
               renderItem={(talent) => (
@@ -183,6 +227,7 @@ export default function TalentExplorer() {
                         <Tag color={talent.matchScore >= 85 ? 'green' : talent.matchScore >= 75 ? 'blue' : 'orange'}>
                           匹配度 {talent.matchScore}%
                         </Tag>
+                        {getReviewTag(talent.id)}
                       </div>
                     }
                     description={

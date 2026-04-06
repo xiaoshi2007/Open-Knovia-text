@@ -19,6 +19,7 @@ import {
   SearchOutlined,
   ThunderboltOutlined,
   CommentOutlined,
+  IdcardOutlined,
 } from '@ant-design/icons';
 import { useAppStore } from '../store/appStore';
 
@@ -47,6 +48,7 @@ const menuConfig: Record<string, { key: string; icon: React.ReactNode; label: st
     { key: 'home', icon: <HomeOutlined />, label: '企业门户', path: '/enterprise' },
     { key: 'talent', icon: <SearchOutlined />, label: '人才图谱', path: '/enterprise/talent-explorer' },
     { key: 'match', icon: <ThunderboltOutlined />, label: '人岗匹配', path: '/enterprise/job-match' },
+    { key: 'ability-resume', icon: <IdcardOutlined />, label: '能力图谱简历', path: '/enterprise/ability-resume' },
     { key: 'jobs', icon: <SolutionOutlined />, label: '岗位管理', path: '/enterprise' },
     qaMenuItem,
   ],

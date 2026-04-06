@@ -13,6 +13,7 @@ import AITestPaper from './pages/teacher/AITestPaper';
 import EnterprisePortal from './pages/enterprise/EnterprisePortal';
 import TalentExplorer from './pages/enterprise/TalentExplorer';
 import JobMatchAnalysis from './pages/enterprise/JobMatchAnalysis';
+import AbilityResumeGenerator from './pages/enterprise/AbilityResumeGenerator';
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role: string }) {
   const user = useAppStore((s) => s.user);
@@ -52,6 +53,7 @@ export default function App() {
         <Route path="enterprise" element={<ProtectedRoute role="enterprise"><EnterprisePortal /></ProtectedRoute>} />
         <Route path="enterprise/talent-explorer" element={<ProtectedRoute role="enterprise"><TalentExplorer /></ProtectedRoute>} />
         <Route path="enterprise/job-match" element={<ProtectedRoute role="enterprise"><JobMatchAnalysis /></ProtectedRoute>} />
+        <Route path="enterprise/ability-resume" element={<ProtectedRoute role="enterprise"><AbilityResumeGenerator /></ProtectedRoute>} />
         {/* Default redirect */}
         <Route path="*" element={<Navigate to={user.role ? `/${user.role}` : '/login'} replace />} />
       </Route>
