@@ -36,6 +36,7 @@ const menuConfig: Record<string, { key: string; icon: React.ReactNode; label: st
   student: [
     { key: 'home', icon: <HomeOutlined />, label: '学生门户', path: '/student' },
     { key: 'ability', icon: <AimOutlined />, label: '能力图谱', path: '/student/ability-graph' },
+    { key: 'resume', icon: <IdcardOutlined />, label: '个人简历', path: '/student/resume' },
     { key: 'practice', icon: <FileTextOutlined />, label: '智能练习', path: '/student/practice' },
     { key: 'courses', icon: <BookOutlined />, label: '我的课程', path: '/student' },
     qaMenuItem,

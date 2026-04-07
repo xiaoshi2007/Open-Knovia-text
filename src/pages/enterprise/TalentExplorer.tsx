@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Typography, Tag, Select, Input, Space, List, Avatar } from 'antd';
+import { Card, Typography, Tag, Select, Input, Space, List, Avatar, Button, Drawer, Empty } from 'antd';
 import { SearchOutlined, FilterOutlined, EnvironmentOutlined, BookOutlined } from '@ant-design/icons';
 import ReactEChartsCore from 'echarts-for-react/lib/core';
 import * as echarts from 'echarts/core';
@@ -7,6 +7,7 @@ import { ScatterChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { matchAPI } from '../../services/endpoints';
+import { resumeAPI } from '../../services/endpoints';
 
 echarts.use([ScatterChart, GridComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
@@ -79,6 +80,9 @@ export default function TalentExplorer() {
   const [searchText, setSearchText] = useState('');
   const [selectedJob, setSelectedJob] = useState('j1');
   const [reviewStatusMap, setReviewStatusMap] = useState<Record<string, 'pending' | 'reviewed' | 'second-review'>>({});
+  const [resumeDrawerOpen, setResumeDrawerOpen] = useState(false);
+  const [selectedTalent, setSelectedTalent] = useState<(typeof talentData)[number] | null>(null);
+  const [syncedResume, setSyncedResume] = useState<any>(null);
 
   const filteredData = talentData.filter((t) => {
     if (selectedSkills.length > 0 && !selectedSkills.some(s => t.skills.includes(s))) return false;
@@ -111,6 +115,12 @@ export default function TalentExplorer() {
     if (status === 'second-review') return <Tag color="red">差异大需二审</Tag>;
     if (status === 'reviewed') return <Tag color="green">已复核</Tag>;
     return <Tag color="default">待复核</Tag>;
+  };
+
+  const openResumeDrawer = (talent: (typeof talentData)[number]) => {
+    setSelectedTalent(talent);
+    setSyncedResume(resumeAPI.get(talent.id));
+    setResumeDrawerOpen(true);
   };
 
   return (
@@ -228,6 +238,7 @@ export default function TalentExplorer() {
                           匹配度 {talent.matchScore}%
                         </Tag>
                         {getReviewTag(talent.id)}
+                        {resumeAPI.get(talent.id) ? <Tag color="cyan">简历已同步</Tag> : <Tag>暂无同步简历</Tag>}
                       </div>
                     }
                     description={
@@ -239,6 +250,9 @@ export default function TalentExplorer() {
                         <div style={{ marginTop: 4 }}>
                           {talent.skills.map(s => <Tag key={s} style={{ fontSize: 11 }}>{s}</Tag>)}
                         </div>
+                        <div style={{ marginTop: 8 }}>
+                          <Button size="small" type="link" onClick={() => openResumeDrawer(talent)}>查看同步简历</Button>
+                        </div>
                       </div>
                     }
                   />
@@ -248,6 +262,56 @@ export default function TalentExplorer() {
           </Card>
         </div>
       </div>
+
+      <Drawer
+        title={selectedTalent ? `${selectedTalent.name} · 同步简历` : '同步简历'}
+        placement="right"
+        width={520}
+        open={resumeDrawerOpen}
+        onClose={() => setResumeDrawerOpen(false)}
+      >
+        {!syncedResume ? (
+          <Empty description="该学生暂未同步简历" />
+        ) : (
+          <div>
+            <Paragraph>
+              <Text strong>目标岗位：</Text>{syncedResume.targetRole}
+            </Paragraph>
+            <Paragraph>
+              <Text strong>院校专业：</Text>{syncedResume.school} · {syncedResume.major}
+            </Paragraph>
+            <Paragraph>
+              <Text strong>个人简介：</Text>{syncedResume.summary}
+            </Paragraph>
+            <Paragraph>
+              <Text strong>项目经历：</Text>
+            </Paragraph>
+            <List
+              size="small"
+              dataSource={syncedResume.projects || []}
+              renderItem={(project: any) => (
+                <List.Item>
+                  <div>
+                    <Text strong>{project.name}</Text>
+                    <Tag color="blue" style={{ marginLeft: 8 }}>{project.role}</Tag>
+                    <ul style={{ margin: '8px 0 8px 16px', padding: 0 }}>
+                      {(project.highlights || []).map((h: string) => <li key={h}>{h}</li>)}
+                    </ul>
+                  </div>
+                </List.Item>
+              )}
+            />
+            <Paragraph>
+              <Text strong>能力维度：</Text>
+            </Paragraph>
+            <Space wrap>
+              {(syncedResume.dimensions || []).map((d: any) => (
+                <Tag color="purple" key={d.name}>{d.name}: {d.score}</Tag>
+              ))}
+            </Space>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }

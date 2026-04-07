@@ -1,21 +1,25 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, Button, Radio, Space, Typography, Tag, Progress, List } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, ArrowLeftOutlined, ArrowRightOutlined, SendOutlined } from '@ant-design/icons';
 import { mockQuestions } from '../../data/mockData';
+import type { Question } from '../../types';
 
 const { Title, Text } = Typography;
 
 export default function SmartPractice() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const customQuestions = (location.state as { customQuestions?: Question[] } | null)?.customQuestions;
+  const questions = customQuestions && customQuestions.length > 0 ? customQuestions : mockQuestions;
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [submitted, setSubmitted] = useState(false);
-  const question = mockQuestions[currentIdx];
+  const question = questions[currentIdx];
 
   const handleAnswer = (qId: string, value: string) => {
     if (submitted) return;
-    const q = mockQuestions.find(q => q.id === qId);
+    const q = questions.find(q => q.id === qId);
     if (q?.type === 'multiple') {
       const prev = (answers[qId] as string[]) || [];
       const next = prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value];
@@ -28,7 +32,7 @@ export default function SmartPractice() {
   const handleSubmit = () => {
     setSubmitted(true);
     // TODO: 未来调用 aiAPI.analyzeResult() 获取AI分析结果
-    setTimeout(() => navigate('/student/practice/result', { state: { answers, questions: mockQuestions } }), 500);
+    setTimeout(() => navigate('/student/practice/result', { state: { answers, questions } }), 500);
   };
 
   const isAnswered = (qId: string) => !!answers[qId] && (Array.isArray(answers[qId]) ? answers[qId].length > 0 : true);
@@ -41,22 +45,22 @@ export default function SmartPractice() {
 
   const difficultyLabels: Record<number, string> = { 1: '简单', 2: '较易', 3: '中等', 4: '较难', 5: '困难' };
 
-  const answeredCount = mockQuestions.filter(q => isAnswered(q.id)).length;
+  const answeredCount = questions.filter(q => isAnswered(q.id)).length;
 
   return (
     <div>
       <div className="page-header">
         <Title level={3} style={{ marginBottom: 4 }}>📝 智能练习</Title>
         <Text type="secondary">
-          数据结构与算法 · 已答 {answeredCount}/{mockQuestions.length} 题
+          数据结构与算法 · 已答 {answeredCount}/{questions.length} 题
         </Text>
       </div>
 
       <div style={{ marginBottom: 16 }}>
         <Progress
-          percent={Math.round((answeredCount / mockQuestions.length) * 100)}
+          percent={Math.round((answeredCount / questions.length) * 100)}
           strokeColor="#6366f1"
-          format={() => `${answeredCount}/${mockQuestions.length}`}
+          format={() => `${answeredCount}/${questions.length}`}
         />
       </div>
 
@@ -70,7 +74,7 @@ export default function SmartPractice() {
         >
           <List
             size="small"
-            dataSource={mockQuestions}
+            dataSource={questions}
             renderItem={(q, idx) => (
               <List.Item
                 onClick={() => setCurrentIdx(idx)}
@@ -213,7 +217,7 @@ export default function SmartPractice() {
               上一题
             </Button>
             <Space>
-              {currentIdx < mockQuestions.length - 1 ? (
+              {currentIdx < questions.length - 1 ? (
                 <Button
                   type="primary"
                   icon={<ArrowRightOutlined />}

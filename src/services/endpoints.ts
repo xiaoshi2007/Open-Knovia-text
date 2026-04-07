@@ -81,3 +81,15 @@ export const recruitmentAPI = {
   getApplicants: (jobId: string) => api.get(`/recruitment/applicants/${jobId}`),
   createJob: (data: unknown) => api.post('/recruitment/jobs', data),
 };
+
+// 学生简历（学生端与HR端同步）
+export const resumeAPI = {
+  save: (resume: unknown & { studentId: string }) => {
+    localStorage.setItem(`student_resume_${resume.studentId}`, JSON.stringify(resume));
+    return { success: true };
+  },
+  get: (studentId: string) => {
+    const raw = localStorage.getItem(`student_resume_${studentId}`);
+    return raw ? JSON.parse(raw) : null;
+  },
+};

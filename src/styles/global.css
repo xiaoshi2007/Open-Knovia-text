@@ -390,6 +390,12 @@ a.ant-btn-link:not(:disabled):hover {
   background: #eef2ff !important;
 }
 
+/* Sidebar menu title layout */
+.ant-layout-sider .ant-menu-inline .ant-menu-item .ant-menu-title-content {
+  display: flex;
+  flex-direction: column;
+}
+
 /* ===========================
    🔄 Spin dots gradient
    =========================== */

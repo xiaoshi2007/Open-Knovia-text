@@ -7,6 +7,7 @@ import StudentPortal from './pages/student/StudentPortal';
 import AbilityGraph from './pages/student/AbilityGraph';
 import SmartPractice from './pages/student/SmartPractice';
 import PracticeResult from './pages/student/PracticeResult';
+import ResumeCenter from './pages/student/ResumeCenter';
 import TeacherPortal from './pages/teacher/TeacherPortal';
 import KnowledgeGraphView from './pages/teacher/KnowledgeGraphView';
 import AITestPaper from './pages/teacher/AITestPaper';
@@ -46,6 +47,7 @@ export default function App() {
         {/* Student routes */}
         <Route path="student" element={<ProtectedRoute role="student"><StudentPortal /></ProtectedRoute>} />
         <Route path="student/ability-graph" element={<ProtectedRoute role="student"><AbilityGraph /></ProtectedRoute>} />
+        <Route path="student/resume" element={<ProtectedRoute role="student"><ResumeCenter /></ProtectedRoute>} />
         <Route path="student/practice" element={<ProtectedRoute role="student"><SmartPractice /></ProtectedRoute>} />
         <Route path="student/practice/result" element={<ProtectedRoute role="student"><PracticeResult /></ProtectedRoute>} />
         {/* Teacher routes */}
