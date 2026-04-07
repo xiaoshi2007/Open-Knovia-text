@@ -10,6 +10,9 @@ import PracticeResult from './pages/student/PracticeResult';
 import TeacherPortal from './pages/teacher/TeacherPortal';
 import KnowledgeGraphView from './pages/teacher/KnowledgeGraphView';
 import AITestPaper from './pages/teacher/AITestPaper';
+import ClassroomSupervision from './pages/teacher/ClassroomSupervision';
+import InClassQuizCenter from './pages/teacher/InClassQuizCenter';
+import AssistantHomeworkReview from './pages/teacher/AssistantHomeworkReview';
 import EnterprisePortal from './pages/enterprise/EnterprisePortal';
 import TalentExplorer from './pages/enterprise/TalentExplorer';
 import JobMatchAnalysis from './pages/enterprise/JobMatchAnalysis';
@@ -49,6 +52,9 @@ export default function App() {
         <Route path="teacher" element={<ProtectedRoute role="teacher"><TeacherPortal /></ProtectedRoute>} />
         <Route path="teacher/knowledge-graph" element={<ProtectedRoute role="teacher"><KnowledgeGraphView /></ProtectedRoute>} />
         <Route path="teacher/ai-testpaper" element={<ProtectedRoute role="teacher"><AITestPaper /></ProtectedRoute>} />
+        <Route path="teacher/classroom-supervision" element={<ProtectedRoute role="teacher"><ClassroomSupervision /></ProtectedRoute>} />
+        <Route path="teacher/in-class-quiz" element={<ProtectedRoute role="teacher"><InClassQuizCenter /></ProtectedRoute>} />
+        <Route path="teacher/assistant-homework-review" element={<ProtectedRoute role="teacher"><AssistantHomeworkReview /></ProtectedRoute>} />
         {/* Enterprise routes */}
         <Route path="enterprise" element={<ProtectedRoute role="enterprise"><EnterprisePortal /></ProtectedRoute>} />
         <Route path="enterprise/talent-explorer" element={<ProtectedRoute role="enterprise"><TalentExplorer /></ProtectedRoute>} />

@@ -1,10 +1,13 @@
-import { Card, Row, Col, Typography, List, Tag, Badge } from 'antd';
+import { Card, Row, Col, Typography, List, Tag, Badge, Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import {
   TeamOutlined,
   FileTextOutlined,
   CalendarOutlined,
   CheckCircleOutlined,
   RiseOutlined,
+  EyeOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import ReactEChartsCore from 'echarts-for-react/lib/core';
 import * as echarts from 'echarts/core';
@@ -58,14 +61,52 @@ const pieOption = {
 };
 
 export default function TeacherPortal() {
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="page-header">
         <Title level={3} style={{ marginBottom: 4 }}>
           👨‍🏫 你好，赵教授
         </Title>
-        <Text type="secondary">您有 3 项待批改任务</Text>
+        <Text type="secondary">教师端已拆分老师与助教职责，支持课堂监管、小测发布与作业批改</Text>
       </div>
+
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} lg={12}>
+          <Card
+            bordered={false}
+            className="card-hover"
+            title="老师工作台"
+            extra={<Tag color="blue">老师</Tag>}
+          >
+            <Text type="secondary">聚焦课堂运行与教学评估，支持课堂监管与随堂小测数据闭环。</Text>
+            <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
+              <Button icon={<EyeOutlined />} onClick={() => navigate('/teacher/classroom-supervision')}>
+                课堂监管
+              </Button>
+              <Button type="primary" icon={<FileTextOutlined />} onClick={() => navigate('/teacher/in-class-quiz')}>
+                随堂小测发布
+              </Button>
+            </div>
+          </Card>
+        </Col>
+        <Col xs={24} lg={12}>
+          <Card
+            bordered={false}
+            className="card-hover"
+            title="助教工作台"
+            extra={<Tag color="purple">助教</Tag>}
+          >
+            <Text type="secondary">聚焦作业批改与反馈回传，提升批改效率并保障评分一致性。</Text>
+            <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
+              <Button type="primary" icon={<EditOutlined />} onClick={() => navigate('/teacher/assistant-homework-review')}>
+                作业批改
+              </Button>
+            </div>
+          </Card>
+        </Col>
+      </Row>
 
       {/* Stats */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>

@@ -20,6 +20,9 @@ import {
   ThunderboltOutlined,
   CommentOutlined,
   IdcardOutlined,
+  EyeOutlined,
+  NotificationOutlined,
+  CheckSquareOutlined,
 } from '@ant-design/icons';
 import { useAppStore } from '../store/appStore';
 
@@ -39,6 +42,9 @@ const menuConfig: Record<string, { key: string; icon: React.ReactNode; label: st
   ],
   teacher: [
     { key: 'home', icon: <HomeOutlined />, label: '教师门户', path: '/teacher' },
+    { key: 'teacher-supervision', icon: <EyeOutlined />, label: '课堂监管', path: '/teacher/classroom-supervision' },
+    { key: 'teacher-quiz', icon: <NotificationOutlined />, label: '随堂小测', path: '/teacher/in-class-quiz' },
+    { key: 'assistant-review', icon: <CheckSquareOutlined />, label: '助教批改', path: '/teacher/assistant-homework-review' },
     { key: 'knowledge', icon: <ApartmentOutlined />, label: '知识图谱', path: '/teacher/knowledge-graph' },
     { key: 'aipaper', icon: <RobotOutlined />, label: '智能组卷', path: '/teacher/ai-testpaper' },
     { key: 'classes', icon: <TeamOutlined />, label: '班级管理', path: '/teacher' },
